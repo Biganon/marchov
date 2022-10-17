@@ -7,6 +7,7 @@ authors = ["Simon Junod <sj@simonjunod.ch>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 pydle = {extras = ["sasl"], version = "^1.0.0"}
+markovify = "^0.9.4"
 
 
 [tool.poetry.group.dev.dependencies]
