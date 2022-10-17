@@ -1,0 +1,2 @@
+PASSWORD = "blahblahblah"
+CHANNEL = "##blah"
