@@ -8,6 +8,12 @@ from hashlib import md5
 from random import choice
 
 
+class CustomNewlineText(markovify.NewlineText):
+    def __init__(self, input_text, *args, **kwargs):
+        super(markovify.NewlineText, self).__init__(input_text, *args, **kwargs)
+        self.size = len(input_text)
+
+
 class Marchov(pydle.Client):
     def __init__(self, *args, **kwargs):
         self.models = {}
@@ -32,7 +38,7 @@ class Marchov(pydle.Client):
         for nick in sorted(messages.keys()):
             print(f"Commence {nick}")
             try:
-                model = markovify.NewlineText("\n".join(messages[nick]), state_size=3)
+                model = CustomNewlineText("\n".join(messages[nick]), state_size=3)
                 self.models[nick] = model
             except KeyError:
                 pass
@@ -67,7 +73,12 @@ class Marchov(pydle.Client):
                 return
 
             nick = parsed.group(1)
-            normalized_nick = normalize_nick(nick)
+            if nick.strip() == "?":
+                nicks = [m[0] for m in self.models.items() if m[1].size >= 10_000]
+                normalized_nick = choice(nicks)
+                nick = normalized_nick
+            else:
+                normalized_nick = normalize_nick(nick)
             prompt = parsed.group(2)
             prompt = prompt.strip() if prompt else None
             if normalized_nick not in self.models.keys():
